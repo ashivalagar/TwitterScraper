@@ -36,7 +36,7 @@ def setTimeOut(download):
                 [tweet.date, tweet.id, tweet.text, user, tweet.geo])
 
     temp = pd.DataFrame.from_records(
-        downloadList, columns=["date", "id", "tweet", "user", "loc", "loc_assigned"])
+        downloadList, columns=["date", "id", "tweet", "user", "loc"])
     if init_chunk:
         setCounter(len(downloadList))
         temp.to_csv('./data/data.csv', index=False)
