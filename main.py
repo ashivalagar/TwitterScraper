@@ -56,7 +56,7 @@ def getAllTweets():
         '2020-07-01').setUntil('2020-08-01').setWithin('5000mi')
 
     tweets = got.manager.TweetManager.getTweets(
-        tweetCriteria, receiveBuffer=setTimeOut, bufferLength=15000)
+        tweetCriteria, receiveBuffer=setTimeOut, bufferLength=10000)
 
 
 if __name__ == "__main__":
