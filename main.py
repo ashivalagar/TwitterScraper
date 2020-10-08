@@ -1,35 +1,54 @@
 import GetOldTweets3 as got
 import tweepy
 import pandas as pd
-import datetime
 import config as cfg
 import time
 
-auth = tweepy.OAuthHandler(
-    cfg.twitter_creds["consumer_key"], cfg.twitter_creds["consumer_secret"])
-auth.set_access_token(
-    cfg.twitter_creds["access_token"], cfg.twitter_creds["access_token_secret"])
+def setUpTwitterAuth(cfg):
+    '''
+    Initialises the twitter api by passing our credentials to the api.
 
-api = tweepy.API(auth)
+    We can add in our credentials in config.py.
+    '''
+    auth = tweepy.OAuthHandler(
+    cfg.twitter_creds["consumer_key"], cfg.twitter_creds["consumer_secret"])
+    auth.set_access_token(
+    cfg.twitter_creds["access_token"], cfg.twitter_creds["access_token_secret"])
+    api = tweepy.API(auth)
 
 
 def setInitChunk(value):
+    '''
+    Set state function for init chunk.
+
+    Controls whether a new csv is created or we append data to an existing csv.
+    '''
     global init_chunk
     init_chunk = value
 
 
 def setCounter(value):
+    '''
+    Set state function for tweet counter.
+
+    Counter for the total number of tweets scraped for progress check while executing script.
+    '''
     global total_tweets
     total_tweets = value
     print(total_tweets)
 
 
 def setTimeOut(download):
+    '''
+    Callback function for writing scraped tweets into csv and setting the program to sleep to prevent error
+    #429 too many requests.
+    '''
     downloadList = list()
     print(len(download))
 
     for tweet in download:
         user = tweet.username
+        # use tweepy to get user details and check for follower count.
         userDetails = api.get_user(user)
         if (userDetails.followers_count >= 100000):
             downloadList.append(
@@ -52,6 +71,9 @@ def setTimeOut(download):
 
 
 def getAllTweets():
+    '''
+    Setting the tweet scraping criteria and starting the getOldTweets3 scraping api.
+    '''
     tweetCriteria = got.manager.TweetCriteria().setNear('US').setSince(
         '2020-07-01').setUntil('2020-08-01').setWithin('5000mi')
 
@@ -60,5 +82,6 @@ def getAllTweets():
 
 
 if __name__ == "__main__":
+    setUpTwitterAuth(cfg)
     setInitChunk(True)
     getAllTweets()
